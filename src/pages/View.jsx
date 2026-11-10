@@ -1,37 +1,84 @@
-import { faStar } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-FontAwesomeIcon
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import Header from '../Components/Header';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToWishlist } from '../redux/slices/wishlistSlice';
+import Swal from 'sweetalert2';
+
+
 
 function View() {
+ 
+  const { id } = useParams()
+  console.log(id);
+  const { allProducts } = useSelector(state => state.productReducer)
+  const [product, setProduct] = useState({})
+  const userWishlist = useSelector(state=>state.WishlistReducer)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    setProduct(allProducts?.find(item => item.id == id))
+  }, [])
+
+  console.log(product);
+const handleWishlist = ()=>{
+  //check the product already in the wishlist
+  const existingData = userWishlist?.find(item=>item?.id==product.id)
+  if(existingData){
+Swal.fire({
+  title:"Sorry",
+  text : "Product Already in your in the wishList",
+  icon : "error",
+  confirmButton : "Ok"
+
+})
+  }else{
+    dispatch(addToWishlist(product))
+
+  }
+}
+
   return (
-    <div className='container my-5 pt-5'> 
-      <div style={{height:"90vh"}} className='row align-items-center'>
-        <div className='col-lg-6 text-center'>
-         <img className='img-fluid h-75 ' src="https://secretperfumes.in/cdn/shop/files/10_d7407c37-0d86-4e10-9b1a-413ee8df85b8.png?v=1782045470" alt="Product" />
+    <>
+      <Header />
 
-         <div className='d-flex justify-content-evenly mt-5'>
-          <button className='btn btn-info'>ADD TO WISHLIST</button>
-          <button className='btn btn-success'>ADD TO CART</button>
-         </div>
-        </div>
-         <div className='col-lg-6 mt-5 '>
-           <h3 className='fw-bold'>Title</h3>
-           <h2 className='fw-bold'>$ 40</h2>
-           <h4 className='fw-bold'>Brand :</h4>
-           <h4 className='fw-bold'>Category :</h4>
-           <h4 className='fw-bold'>Description :</h4>
-           <h5 className='fw-bold'>Client Reviews</h5>
-           <div className='border rounded shadow p-2 my-4'>
-              <p><span className='fw-bold'>Name :</span>Message</p>
+      <div className='container my-5 pt-5'>
+        <div className='row align-items-center'>
+          <div className="col-lg-6 text-center">
+            <img className='img-fluid h-25' src={product?.thumbnail} alt="no image" />
+            <div className='d-flex justify-content-evenly mt-5'>
+              <button onClick={handleWishlist} className='btn btn-info'>ADD TO WISHLIST</button>
+              <button className='btn btn-success'>ADD TO CART</button>
+            </div>
 
-              <p>Rating : <FontAwesomeIcon icon={faStar} className='text-warning' /></p>
-           </div>
+
+          </div>
+
+          <div className="col-lg-6">
+            <h3 className='fw-bold'> {product?.title}</h3>
+            <h2 className='fw-bold'>$ {product?.price}</h2>
+            <h4 className='fw-bold'>Brand : {product?.brand} </h4>
+            <h4 className='fw-bold'>Category : {product?.category} </h4>
+            <h4 className='fw-bold'>Description : {product?.description} </h4>
+            <h5 className='fw-bold'>Client Reviews</h5>
+            {
+              product?.reviews?.map((item,index) => (
+                <div key={index}  className='border rounded shadow p-2 my-5'>
+                  <p> <span className='fw-bold'>Name : {item?.reviewerName}</span> Message : {item?.comment} </p>
+                  <p>Rating : {item?.rating} <FontAwesomeIcon icon={faStar} className='text-warning' /> </p>
+
+                </div>
+              ))
+            }
+
+
+          </div>
+
         </div>
 
       </div>
-     
-    </div>
+    </>
   )
 }
 

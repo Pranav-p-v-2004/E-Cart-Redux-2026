@@ -7,7 +7,7 @@ import { IoIosArrowRoundForward } from "react-icons/io";
 function Footer() {
   return (
     <div
-      style={{ backgroundColor: '#365f83', height: "330px" }}
+      style={{ backgroundColor: '#1b2e3a', height: "330px" }}
       className='container-fluid text-white p-5'>
 
       <div className='row'>
