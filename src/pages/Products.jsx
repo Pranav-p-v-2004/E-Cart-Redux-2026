@@ -65,7 +65,7 @@ function Products() {
           }
      <div className='text-center my-5 fs-3 fw-bolder g-4'>
     <button onClick={navigatePrevPage} className='btn'><FontAwesomeIcon icon={faBackward} /> </button>
-   <span className='mx-3'> {currentPage}of{totalPages}</span>
+   <span className='mx-3'> {currentPage} of {totalPages}</span>
  <button onClick={navigateNextPage} className='btn'>  <FontAwesomeIcon icon={faForward} /></button>
 </div>
       </div>

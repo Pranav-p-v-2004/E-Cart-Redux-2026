@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToWishlist } from '../redux/slices/wishlistSlice';
 import Swal from 'sweetalert2';
+import { addCart } from '../redux/slices/cartSlice';
 
 
 
@@ -16,6 +17,7 @@ function View() {
   const { allProducts } = useSelector(state => state.productReducer)
   const [product, setProduct] = useState({})
   const userWishlist = useSelector(state=>state.WishlistReducer)
+  const userCart = useSelector(state=>state.cartReducer)
   const dispatch = useDispatch()
   useEffect(() => {
     setProduct(allProducts?.find(item => item.id == id))
@@ -24,8 +26,8 @@ function View() {
   console.log(product);
 const handleWishlist = ()=>{
   //check the product already in the wishlist
-  const existingData = userWishlist?.find(item=>item?.id==product.id)
-  if(existingData){
+  const existingItem = userWishlist?.find(item=>item?.id==product.id)
+  if(existingItem){
 Swal.fire({
   title:"Sorry",
   text : "Product Already in your in the wishList",
@@ -39,6 +41,25 @@ Swal.fire({
   }
 }
 
+const handleCart = ()=>{
+  //check the product already in the wishlist
+   const existingItem = userCart?.find(item=>item?.id==product.id)
+     dispatch(addCart(product))
+     Swal.fire({
+     title : "Success",
+     text : existingItem?`${existingItem.title} quantity incremented ` : "product added to your cart",
+     icon : "Success",
+     confirmButton : "OK"
+     })
+}
+
+
+
+
+
+
+
+
   return (
     <>
       <Header />
@@ -49,7 +70,7 @@ Swal.fire({
             <img className='img-fluid h-25' src={product?.thumbnail} alt="no image" />
             <div className='d-flex justify-content-evenly mt-5'>
               <button onClick={handleWishlist} className='btn btn-info'>ADD TO WISHLIST</button>
-              <button className='btn btn-success'>ADD TO CART</button>
+              <button onClick={handleCart} className='btn btn-success'>ADD TO CART</button>
             </div>
 
 
